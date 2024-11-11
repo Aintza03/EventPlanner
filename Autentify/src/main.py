@@ -40,10 +40,14 @@ def register(data: UsuarioCreate, db: Session = Depends(SessionLocal)):
     #genero todos los campos salvo id que se autogenera
     hash = contexto_pwd.hash(data.contrasena)
     nuevoUsuario = Usuario(nombreUsuario=data.nombreUsuario, contrasena=hash, correo=data.correo)
-    db.add(nuevoUsuario)
-    db.commit()
-    db.refresh(nuevoUsuario)
-    return {'mensaje': 'Usuario guardado en la base de datos'}
+    try:
+        db.add(nuevoUsuario)
+        db.commit()
+        db.refresh(nuevoUsuario)
+        return {'mensaje': 'Usuario guardado en la base de datos'}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El nombre de usuario o el correo ya existen")
 class UsuarioLogin(BaseModel):
     nombreUsuario: str
     contrasena: str
@@ -84,5 +88,9 @@ def modify_user(data: UsuarioModify, db: Session = Depends(SessionLocal), token:
             usuario.contrasena = contexto_pwd.hash(data.contrasenaNueva)
     if data.correo:
         usuario.correo = data.correo
-    db.commit()
-    return {'mensaje': 'Cambios guardados'}
+    try:
+        db.commit()
+        return {'mensaje': 'Cambios guardados'}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error al guardar los cambios")
