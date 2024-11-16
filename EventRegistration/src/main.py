@@ -56,6 +56,7 @@ class EventoCreate(BaseModel):
     lugar: str
     descripcion: str
     idUsuario: int
+    participantes: list[Usuario]
 
 class EventoRespuesta(BaseModel):
     id: int
@@ -84,10 +85,23 @@ def creacion_de_evento(data: EventoCreate,db:Session = Depends(SessionLocal)):
         db.add(nuevoEvento)
         db.commit()
         db.refresh(nuevoEvento)
+        for participante in data.participantes:
+            atiende = Atiende(idUsuario=participante.id,idEvento=nuevoEvento.id)
+            db.add(atiende)
+            db.commit()
+            db.refresh(atiende)
         return {'mensaje':'Evento ' + nuevoEvento.nombre + ' guardado en la base de datos'}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al guardar el evento en la base de datos')
+
+#Para los invitados
+@app.get('/usuario/existe/{nombreUsuario}')
+def existe_usuario(nombreUsuario:str,db:Session = Depends(SessionLocal)):
+    usuario = db.query(Usuario).filter(Usuario.nombreUsuario == nombreUsuario).first()
+    if not usuario:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Usuario no encontrado')
+    return {'mensaje':'Usuario encontrado'}
 
 #Obtiene todos los eventos creados por el usuario
 @app.get('/eventos/{id}',response_model=EventosRespuesta)
