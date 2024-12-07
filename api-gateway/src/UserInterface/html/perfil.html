@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Perfil de usuario</title>
+        <link rel="stylesheet" type="text/css" href="../css/stilesPerfil.css">
+    </head>
+    <body>
+        <button id = "inicio" onclick="window.location.href='principal.html'">Inicio</button>
+        <div id = "Perfil">
+            <p id = "Usuario" data-value = '???'>Nombre de usuario: ???</p>
+            <p id = "Correo" data-value = '???'>Correo: ???</p>
+            <button id = "editarButton" class="formButton">Editar</button>
+        </div>
+        <div id = "Editar">
+            <p id = "usuarioEdit"> Nombre de usuario: ???</p>
+            <label for = "correoEdit">Correo:</label>
+            <input type = "text" id = "correoEdit" name = "correoEdit" value = "???">
+            <br>
+            <label for = "contrasenaAntigua">Contrasena Antigua: </label>
+            <input type = "password" id = "contrasenaAntigua" name = "contrasenaAntigua">
+            <br>
+            <label for = "contrasena">Contrasena:</label>
+            <input type = "password" id = "contrasena" name = "contrasena">
+            <br>
+            <label for = "repetirContrasena">Repetir Contraseña:</label>
+            <input type = "password" id = "repetirContrasena" name = "repetirContrasena">
+            <br>
+            <button id = "guardar" class = "formButton">Guardar</button>
+            <p class = "error"></p>
+        </div>
+    </body>
+    <script src = "../js/perfil.js"></script>
+</html>

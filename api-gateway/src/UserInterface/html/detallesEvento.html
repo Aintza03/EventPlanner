@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Detalles evento</title>
+        <link rel="stylesheet" type="text/css" href="../css/stilesDetalles.css">
+    </head>
+    <body>  
+        <button id = "Perfil" onclick="window.location.href='principal.html'">Inicio</button>
+        <button id = "Favoritos">Añadir a favoritos</button>
+        <button id = "Perfil" onclick="window.location.href='perfil.html'">Perfil</button>
+        <div id = 'Ver'>
+            <p id = "Creador">Creador: ????</p>
+            <p id = "Nombre">Nombre: ????</p>
+            <p id = "Descripcion">Descripcion: ????</p>
+            <p id = "Lugar">Lugar: ????</p>
+            <p id = "FechaIni">Fecha inicio: ????</p>
+            <p id = "FechaFin">Fecha fin: ????</p>
+            <p>Participantes:</p>
+            <ul id = "Participantes"></ul>
+            <button id = "botonEditar" class = "formButton">Editar</button>
+        </div>
+        <form id = 'Editar'>
+            <p id = "CreadorEdit">Creador: ????</p>
+            <label for = "NombreEdit">Nombre: </label>
+            <input type = "text" id = "NombreEdit" name = "Nombre" required>
+            <br>
+            <label for = "DescripcionEdit">Descripcion: </label>
+            <input type = "text" id = "DescripcionEdit" name = "Descripcion" required>
+            <br>
+            <label for = "LugarEdit">Lugar: </label>
+            <input type = "text" id = "LugarEdit" name = "Lugar" required>
+            <br>
+            <label for = "FechaInicioEdit">Fecha: </label>
+            <input type = "datetime-local" id = "FechaInicioEdit" name = "FechaInicio" required>
+            <br>
+            <label for = "FechaFinEdit">Fecha: </label>
+            <input type = "datetime-local" id = "FechaFinEdit" name = "FechaFin" required>
+            <br>
+            <p>Participantes: </p>
+            <ul id = "ParticipantesEditar">
+            </ul>
+            <input type = "text" id = "ParticipantesEdit" name = "Participantes" required>
+            <button id = "botonInvitar" class = "formButton">Invitar</button>
+            <hr>
+            <button id = "botonCancelar" class = "formButton">Desinvitar</button>
+            <hr>
+            <button id = "botonGuardar" class = "formButton">Guardar</button>
+            <p class = error></p>
+        </form>
+    </body>
+    <script src="../js/detallesEvento.js"></script>
+</html>

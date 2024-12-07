@@ -7,4 +7,7 @@ export class AtiendeDto {
     @IsNumber()
     @IsNotEmpty()
     idEvento: number;
+    @IsString()
+    @IsNotEmpty()
+    status: string;
 }

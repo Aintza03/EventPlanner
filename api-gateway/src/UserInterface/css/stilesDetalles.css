@@ -1,0 +1,55 @@
+body {
+    background-color: #eedfcc;
+    font-family: Arial, sans-serif;
+}
+#Favoritos{
+    margin-left: 74%;
+}
+#Perfil{
+    margin-left: 0%;
+}
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #888888;
+    color: #faf0e6;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
+
+#Ver, #Editar{
+    background-color: #faf0e6;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    margin: 20px auto;
+    text-align: left;
+}
+#Editar{
+    display:none;
+}
+#Ver p {
+    margin: 10px 0;
+}
+
+.formButton {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 0;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+    display: block;
+}

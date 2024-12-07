@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register</title>
+        <link rel="stylesheet" href="../css/stilesRegister.css">
+    </head>
+    <body>
+        <button onclick="window.location.href='login.html'">Iniciar Sesión</button> 
+        <div id = "b">
+        <form id = "register">
+            <div class = "formularioRegister">
+            <label for = "usuarioRegister">Usuario: </label>
+            <input type = "text" id = "usuarioRegister"  class = "intro" name = "usuarioRegister" required>
+            </div>
+            <br>
+            <div class = "formularioRegister">
+            <label for = "email">Correo: </label>
+            <input type = "text" id = "email" class = "intro" name = "email" required>
+            </div>
+            <br>
+            <div class = "formularioRegister">
+            <label for = "contrasenaRegister">Contrasena: </label>
+            <input type = "password" id = "contrasenaRegister" class = "intro" name = "contrasenaRegister" required>
+            </div>
+            <br>
+            <button type = "submit"> Iniciar Sesión </button>
+            <br>
+            <p id = "mensajes" class = "error"></p> <!--Posteriormente guardara mensajes de error-->
+        </form>
+        </div>
+    </body>
+    <script src = "../js/register.js"></script>
+</html>

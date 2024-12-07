@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crear evento</title>
+        <link rel="stylesheet" type="text/css" href="../css/stilesCrearEvento.css">
+    </head>
+    <body>  
+        <button id = "Perfil" onclick="window.location.href='perfil.html'">Perfil</button>
+        <form>
+            <p>Creador: ????</p>
+            <label for = "Nombre">Nombre: </label>
+            <input type = "text" id = "Nombre" name = "Nombre" required>
+            <br>
+            <label for = "Descripcion">Descripcion: </label>
+            <input type = "text" id = "Descripcion" name = "Descripcion" required>
+            <br>
+            <label for = "Lugar">Lugar: </label>
+            <input type = "text" id = "Lugar" name = "Lugar" required>
+            <br>
+            <label for = "FechaInicio">Fecha: </label>
+            <input type = "datetime-local" id = "FechaInicio" name = "FechaInicio" required>
+            <br>
+            <label for = "FechaFin">Fecha: </label>
+            <input type = "datetime-local" id = "FechaFin" name = "FechaFin" required>
+            <br>
+            <p>Participantes: </p>
+            <ul>
+            </ul>
+            <input type = "text" id = "Participantes" name = "Participantes" required>
+            <button id = "botonInvitar" class = "formButton">Invitar</button>
+            <hr>
+            <button id = "botonGuardar" class = "formButton">Guardar</button>
+            <p class = error></p>
+        </form>    
+    </body>
+    <script src="../js/crearEvento.js"></script>
+</html>

@@ -3,11 +3,11 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
-import {Evento} from '../../../../EventUpdate/src/evento/evento.entity';
-import {Usuario} from '../../../../EventUpdate/src/usuario/usuario.entity';
-import {Atiende} from '../../../../EventUpdate/src/atiende/atiende.entity';
-import {Favorito} from '../../../../EventUpdate/src/favorito/favorito.entity';
-import { EventoUpdate, EventoUpdateSchema } from '../../../../EventUpdate/src/evento-update/schemas/evento-update.schema';
+import {Evento} from '../../../EventUpdate/src/evento/evento.entity';
+import {Usuario} from '../../../EventUpdate/src/usuario/usuario.entity';
+import {Atiende} from '../../../EventUpdate/src/atiende/atiende.entity';
+import {Favorito} from '../../../EventUpdate/src/favorito/favorito.entity';
+import { EventoUpdate, EventoUpdateSchema } from '../../../EventUpdate/src/evento-update/schemas/evento-update.schema';
 import {NotifyGateway} from './gateway/notify.gateway';
 
 @Injectable()

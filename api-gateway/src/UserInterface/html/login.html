@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet" href="../css/stile.css">
+    </head>
+    <body>
+        <button onclick="window.location.href='register.html'">Register</button> 
+        <div id = "b">
+        <form id = "login">
+            <div class = "formularioLogin">
+            <label for = "usuarioLogin">Usuario: </label>
+            <input type = "text" id = "usuarioLogin"  class = "intro" name = "usuarioLogin" required>
+            </div>
+            <br>
+            <div class = "formularioLogin">
+            <label for = "contrasenaLogin">Contrasena: </label>
+            <input type = "password" id = "contrasenaLogin" class = "intro" name = "contrasenaLogin" required>
+            </div>
+            <br>
+            <button type = "submit"> Iniciar Sesión </button>
+            <br>
+        <p id = "mensajes" class = "error"></p> <!--Posteriormente guardara mensajes de error-->
+        </form>
+        </div>
+        </body>
+    <script src = "../js/login.js"></script>
+</html>

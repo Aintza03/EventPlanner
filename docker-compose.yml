@@ -1,0 +1,38 @@
+services:
+  autentify:
+    build: ./Autentify
+    container_name: autentify
+    ports:
+      - "8000:8000"
+    networks:
+      - microservices-network
+  evento_update:
+    build: ./EventUpdate
+    container_name: evento_update
+    ports:
+      - "5000:5000"
+    networks:
+      - microservices-network
+  registrar_eventos:
+    build: ./EventRegistration
+    container_name: registrar_eventos
+    ports:
+      - "4000:4000"
+    networks: 
+      - microservices-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - autentify
+      - registrar_eventos
+      - evento_update
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge

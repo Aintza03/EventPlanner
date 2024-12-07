@@ -10,48 +10,57 @@ import { Evento } from 'src/evento/evento.entity';
 import {Atiende} from 'src/atiende/atiende.entity';
 @Injectable()
 export class EventoUpdateService {
-    constructor(@InjectModel(EventoUpdate.name) private eventoUpdateModel: Model<EventoUpdate>,
-    @InjectRepository(Evento) private eventoRepository: Repository<Evento>,
-    @InjectRepository(Atiende) private atiendeRepository: Repository<Atiende>    
-) {}
+    constructor(
+        @InjectModel(EventoUpdate.name) private eventoUpdateModel: Model<EventoUpdate>,
+        @InjectRepository(Evento) private eventoRepository: Repository<Evento>,
+        @InjectRepository(Atiende) private atiendeRepository: Repository<Atiende>    
+    ) {}
 
     private async crearUpdatesCambio(id_evento: number, id_usuario: number, accion: string, cambio: string, campo: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
-        const eventoUpdate = new EventoUpdate();
-        eventoUpdate.id_evento = id_evento;
-        eventoUpdate.id_usuario = id_usuario;
-        eventoUpdate.accion = accion;
-        eventoUpdate.cambio = cambio;
-        eventoUpdate.campo = campo;
-        eventoUpdate.descripcion = descripcion;
-        eventoUpdate.fecha = fecha;
-        const newUpdate = new this.eventoUpdateModel(eventoUpdate);
-        return newUpdate.save();
+        const eventoUpdate = new this.eventoUpdateModel({
+            id_evento: id_evento,
+            id_usuario: id_usuario,
+            accion: accion,
+            cambio: cambio,
+            campo: campo,
+            descripcion: descripcion,
+            fecha: fecha,
+        });
+        await eventoUpdate.save();
+        console.log("Se ha añadido una entrada al log");
+        return eventoUpdate;
     }
     private async crearUpdatesRespuesta(id_evento: number, id_usuario: number, accion: string, respuesta: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
-        const eventoUpdate = new EventoUpdate();
-        eventoUpdate.id_evento = id_evento;
-        eventoUpdate.id_usuario = id_usuario;
-        eventoUpdate.accion = accion;
-        eventoUpdate.respuesta = respuesta;
-        eventoUpdate.descripcion = descripcion;
-        eventoUpdate.fecha = fecha;
-        const newUpdate = new this.eventoUpdateModel(eventoUpdate);
-        return newUpdate.save();
+        const eventoUpdate = new this.eventoUpdateModel({
+            id_evento: id_evento,
+            id_usuario: id_usuario,
+            accion: accion,
+            respuesta: respuesta,
+            descripcion: descripcion,
+            fecha: fecha,
+        });
+        await eventoUpdate.save();
+        console.log("Se ha añadido una entrada al log");
+        return eventoUpdate;
     }
 
     //funcion que actualiza un campo concreto del evento y luego llama a crearUpdates
     async updateEvento(id_evento: number, id_usuario: number, accion: string, cambio: string, campo: string): Promise<EventoUpdate> {
         const evento = await this.eventoRepository.findOne({ where: { id: id_evento } });
+        
         //siempre encuentra evento
         if(accion == "AnyadirInvitados"){
-            const atiende = this.atiendeRepository.create({ evento: { id: id_evento }, usuario: { id: parseInt(cambio) } });
+            const atiende = this.atiendeRepository.create({ evento: { id: Number(id_evento) }, usuario: { id: parseInt(cambio)},status: 'Pending'  });
             await this.atiendeRepository.save(atiende);
+            console.log("Se ha guardado el cambio de anadir invitados");
         }else if(accion == "eliminarInvitados"){
             const atiende = await this.atiendeRepository.findOne({ where: { evento: { id: id_evento }, usuario: { id: parseInt(cambio) } } });
             await this.atiendeRepository.remove(atiende);
+            console.log("Se ha guardado el cambio de eliminar invitados.");
         }else{
             evento[campo] = cambio;
             await this.eventoRepository.save(evento);
+            console.log("Se ha guardado el cambio de modificar evento.");
         }
         return this.crearUpdatesCambio(id_evento, id_usuario, accion, cambio, campo,"Se ha cambiado el " + campo + " del evento " + id_evento + " al " + cambio + ".", new Date().toISOString());
     }

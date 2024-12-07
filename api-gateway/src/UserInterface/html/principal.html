@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pagina principal</title>
+        <link rel="stylesheet" type="text/css" href="../css/stilesPrincipal.css">
+    </head>
+    <body>
+        <button id = "Perfil" onclick="window.location.href='perfil.html'">Perfil</button>
+        <div class="grupo_pestanas">
+            <button id="Desp1" class="pestana" onclick="openTab(event, 'Desplegable1')">Mis eventos</button>
+            <button id= "Desp2" class="pestana" onclick="openTab(event, 'Desplegable2')">Invitaciones</button>
+            <button id = "Desp3" class="pestana" onclick="openTab(event, 'Desplegable3')">Favoritos</button>
+        </div>
+        <div id = "desplegables">  
+            <div id="Desplegable1" class="contenido">
+                <button class="boton" onclick="window.location.href='crearEvento.html'">Crear evento</button>
+                <input type="text" id="busqueda1" class = "busqueda" name="busqueda" placeholder="Buscar eventos...(Pulsar enter para buscar)">
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Lugar</th>
+                        <th>Descripcion</th>
+                        <th>Eliminar evento</th>
+                    </tr>
+                </table>    
+            </div>
+            <div id="Desplegable2" class="contenido">
+                <input type="text" id="busqueda2" class="busqueda" name="busqueda" placeholder="Buscar eventos...(Pulsar enter para buscar)">
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Lugar</th>
+                        <th>Descripcion</th>
+                        <th>Estatus</th>
+                    </tr>
+                </table>
+            </div>
+            <div id="Desplegable3" class="contenido">
+                <input type="text" id="busqueda3" name="busqueda" class="busqueda" placeholder="Buscar eventos...(Pulsar enter para buscar)">
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Lugar</th>
+                        <th>Descripcion</th>
+                        <th>Eliminar de favorito</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+    <script src="../js/principal.js"></script>
+</html>

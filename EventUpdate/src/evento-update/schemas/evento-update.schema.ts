@@ -4,11 +4,7 @@ import {Document} from 'mongoose';
 @Schema()
 export class EventoUpdate extends Document {
   @Prop({required: true})
-  id: string;
-
-  @Prop({required: true})
   id_evento: number;
-
   @Prop({required: true})
   id_usuario: number;
   @Prop()
