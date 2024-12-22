@@ -1,6 +1,96 @@
 const ListaParticipantes = [];
 const error = document.querySelector('p.error');
 let idUsuario;
+let notificaciones = [];
+let grupoActual;
+document.getElementById('menuIcono').addEventListener('click', async function() {
+    document.getElementById('barra_lateral').style.width = '350px';
+    document.getElementById('menuIcono').style.display = 'none';
+    document.getElementById('cerrarBarra').style.display = 'inline';
+    document.getElementById('Perfil').style.marginLeft = '90%';
+    console.log("ID USUARIO: "+idUsuario);
+    const token = localStorage.getItem('token');
+    try{
+        const response = await fetch('http://localhost:3000/notificaciones/listaNotificacion', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }})
+            if(response.ok){
+                notificaciones = [];
+                const data = await response.json();
+                grupoActual = 0;
+                const notificaciones2 = data.notificaciones;
+                notificaciones = notificaciones2;
+                let i = 0;
+                let ul = document.getElementById('datosBarra');
+                for (let notificacion of notificaciones2) {
+                    if (i >= 10) {
+                        break;
+                    }
+                    let li = document.createElement('li');
+                    li.id = 'notificacion' + i;
+                    li.textContent = notificacion;
+                    ul.appendChild(li);
+                    i++;
+                }
+                if(notificaciones.length < 11){
+                    document.getElementById('Siguiente').disabled = true;
+                }
+            }
+    }catch (error){
+        console.error('Error: ', error);
+    }
+    document.getElementById('Previo').disabled = true;
+
+});
+
+document.getElementById('cerrarBarra').addEventListener('click', async function() {
+    document.getElementById('barra_lateral').style.width = '0';
+    document.getElementById('menuIcono').style.display = 'inline';
+    document.getElementById('cerrarBarra').style.display = 'none';
+    document.getElementById('Perfil').style.marginLeft = '85%';
+    document.getElementById('datosBarra').innerHTML = '';
+});
+document.getElementById('Siguiente').addEventListener('click', async function() {
+    grupoActual++;
+    let ul = document.getElementById('datosBarra');
+    ul.innerHTML = '';
+    let i = 0;
+    for (let notificacion of notificaciones) {
+        if (i >= 10 * grupoActual && i < 10 * (grupoActual + 1)) {
+            let li = document.createElement('li');
+            li.id = 'notificacion' + i;
+            li.textContent = notificacion;
+            ul.appendChild(li);
+        }
+        i++;
+    }
+    document.getElementById('Previo').disabled = false;
+    if (grupoActual === Math.floor(notificaciones.length/10)) {
+        document.getElementById('Siguiente').disabled = true;
+    }
+});
+document.getElementById('Previo').addEventListener('click', async function() {
+    grupoActual--;
+    let ul = document.getElementById('datosBarra');
+    ul.innerHTML = '';
+    let i = 0;
+    for (let notificacion of notificaciones) {
+        if (i >= 10 * grupoActual && i < 10 * (grupoActual + 1)) {
+            let li = document.createElement('li');
+            li.id = 'notificacion' + i;
+            li.textContent = notificacion;
+            ul.appendChild(li);
+        }
+        i++;
+    }
+    document.getElementById('Siguiente').disabled = false;
+    if (grupoActual === 0) {
+        document.getElementById('Previo').disabled = true;
+    }
+});
+
 document.addEventListener('DOMContentLoaded', async function() {
     const token = localStorage.getItem('token');
     if (!token) {

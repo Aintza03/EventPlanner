@@ -16,11 +16,12 @@ export class EventoUpdateService {
         @InjectRepository(Atiende) private atiendeRepository: Repository<Atiende>    
     ) {}
 
-    private async crearUpdatesCambio(id_evento: number, id_usuario: number, accion: string, cambio: string, campo: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
+    private async crearUpdatesCambio(id_evento: number, id_usuario: number, accion: string, deshecho: number,cambio: string, campo: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
         const eventoUpdate = new this.eventoUpdateModel({
             id_evento: id_evento,
             id_usuario: id_usuario,
             accion: accion,
+            deshecho: deshecho,
             cambio: cambio,
             campo: campo,
             descripcion: descripcion,
@@ -30,11 +31,12 @@ export class EventoUpdateService {
         console.log("Se ha añadido una entrada al log");
         return eventoUpdate;
     }
-    private async crearUpdatesRespuesta(id_evento: number, id_usuario: number, accion: string, respuesta: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
+    private async crearUpdatesRespuesta(id_evento: number, id_usuario: number, accion: string, deshecho: number, respuesta: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
         const eventoUpdate = new this.eventoUpdateModel({
             id_evento: id_evento,
             id_usuario: id_usuario,
             accion: accion,
+            deshecho: deshecho,
             respuesta: respuesta,
             descripcion: descripcion,
             fecha: fecha,
@@ -62,31 +64,38 @@ export class EventoUpdateService {
             await this.eventoRepository.save(evento);
             console.log("Se ha guardado el cambio de modificar evento.");
         }
-        return this.crearUpdatesCambio(id_evento, id_usuario, accion, cambio, campo,"Se ha cambiado el " + campo + " del evento " + id_evento + " al " + cambio + ".", new Date().toISOString());
+        return this.crearUpdatesCambio(id_evento, id_usuario, accion,0, cambio, campo,"Se ha cambiado el " + campo + " del evento " + id_evento + " al " + cambio + ".", new Date().toISOString());
     }
     //funcion que guarda los cambios cuando un invitado acepta o rechaza
     async respuestaInvitacion(id_evento: number, id_usuario:number, respuesta: string): Promise<EventoUpdate> {
+        console.log("Llega a llamar");
         const atiende = await this.atiendeRepository.findOne({ where: { evento: { id: id_evento }, usuario: { id: id_usuario } } });
-        if(respuesta == "aceptar"){
-            return this.crearUpdatesRespuesta(id_evento, id_usuario, "responder", respuesta,"El usuario "+ id_usuario + " ha aceptado la invitacion al evento " + id_evento + ".", new Date().toISOString());
-        }else if(respuesta == "rechazar"){
+        console.log("Llama a la base de datos");
+        if(respuesta == "Aceptado"){
+            console.log("Se ha aceptado el evento");
+            atiende.status = "Aceptado";
+            await this.atiendeRepository.save(atiende);
+            return this.crearUpdatesRespuesta(id_evento, id_usuario, "responder",0,respuesta,"El usuario "+ id_usuario + " ha aceptado la invitacion al evento " + id_evento + ".", new Date().toISOString());
+        }else if(respuesta == "Rechazado"){
             await this.atiendeRepository.remove(atiende);
-            return this.crearUpdatesRespuesta(id_evento, id_usuario,"responder", respuesta, "El usuario " + id_usuario+ " ha rechazado la invitacion al evento " + id_evento + ".", new Date().toISOString());
+            console.log("Se ha rechazado el evento");
+            return this.crearUpdatesRespuesta(id_evento, id_usuario,"responder",0,respuesta, "El usuario " + id_usuario+ " ha rechazado la invitacion al evento " + id_evento + ".", new Date().toISOString());
         }else{
             //throw error
             throw new HttpException("Respuesta no valida", HTTP.BAD_REQUEST);
         }
     }
     //Deshace los cambios realizados en un evento
-    async deshacerCambios(id_evento: number, id_usuario:number): Promise<EventoUpdate> {
-        const ultimaActualizacion = await this.eventoUpdateModel.findOne({ id_evento, campo: { $exists: true, $ne: null}, cambio: { $exists: true, $ne: null }}).sort({ fecha: -1 }).exec();
+    async deshacerCambios(id_evento: number): Promise<EventoUpdate> {
+        const ultimaActualizacion = await this.eventoUpdateModel.findOne({ id_evento, campo: { $exists: true, $ne: null}, cambio: { $exists: true, $ne: null }, deshecho: {$ne: 1}}).sort({ fecha: -1 }).exec();
         if(!ultimaActualizacion){
             throw new HttpException("No hay actualizaciones", HTTP.BAD_REQUEST);    
         }else{
             const evento = await this.eventoRepository.findOne({ where: { id: id_evento } });
-            const[campo] = ultimaActualizacion.campo;
-            const[cambio] = ultimaActualizacion.cambio;
-            const[accion] = ultimaActualizacion.accion;
+            const campo = ultimaActualizacion.campo;
+            const cambio = ultimaActualizacion.cambio;
+            const accion = ultimaActualizacion.accion;
+            const id_usuario = ultimaActualizacion.id_usuario;
             if(accion == "AnyadirInvitados"){
                 const atiende = await this.atiendeRepository.findOne({ where: { evento: { id: id_evento }, usuario: { id: parseInt(cambio) } } });
                 await this.atiendeRepository.remove(atiende);
@@ -101,8 +110,8 @@ export class EventoUpdateService {
                     }
                 await this.eventoRepository.save(evento);
             }
-            
-            return this.crearUpdatesCambio(id_evento, id_usuario,accion,cambio, campo, "Se ha deshecho el cambio del " + campo + " del evento " + id_evento + " al " + cambio + ".", new Date().toISOString());
+            console.log("Se ha deshecho el cambio");
+            return this.crearUpdatesCambio(id_evento, id_usuario,accion,1,cambio, campo, "Se ha deshecho el cambio del " + campo + " del evento " + id_evento + " al " + cambio + ".", new Date().toISOString());
         }
     }
 }

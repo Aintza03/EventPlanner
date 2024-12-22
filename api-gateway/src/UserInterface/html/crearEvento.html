@@ -4,8 +4,19 @@
         <title>Crear evento</title>
         <link rel="stylesheet" type="text/css" href="../css/stilesCrearEvento.css">
     </head>
-    <body>  
+    <body>
+        <button id = "menuIcono" class = "icono-menu">&#9776;</button> <!--&#9776:☰-->  
         <button id = "Perfil" onclick="window.location.href='perfil.html'">Perfil</button>
+        <div id = "barra_lateral" class = "barra_lateral">
+            <button id = "cerrarBarra" class = "cerrar_barra">&times;</button><!--&times:×-->
+            <ul id = "datosBarra">
+
+            </ul>
+            <div class="botonesNav">
+                <button id = "Previo" class = "botonNav">&lt;</button>
+                <button id = "Siguiente" class = "botonNav">&gt;</button>
+            </div>
+        </div>
         <form>
             <p>Creador: ????</p>
             <label for = "Nombre">Nombre: </label>

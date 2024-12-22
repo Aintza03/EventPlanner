@@ -5,7 +5,18 @@
         <link rel="stylesheet" type="text/css" href="../css/stilesPrincipal.css">
     </head>
     <body>
+        <button id = "menuIcono" class = "icono-menu">&#9776;</button> <!--&#9776:☰-->
         <button id = "Perfil" onclick="window.location.href='perfil.html'">Perfil</button>
+        <div id = "barra_lateral" class = "barra_lateral">
+            <button id = "cerrarBarra" class = "cerrar_barra">&times;</button><!--&times:×-->
+            <ul id = "datosBarra">
+
+            </ul>
+            <div class="botonesNav">
+                <button id = "Previo" class = "botonNav">&lt;</button>
+                <button id = "Siguiente" class = "botonNav">&gt;</button>
+            </div>
+        </div>
         <div class="grupo_pestanas">
             <button id="Desp1" class="pestana" onclick="openTab(event, 'Desplegable1')">Mis eventos</button>
             <button id= "Desp2" class="pestana" onclick="openTab(event, 'Desplegable2')">Invitaciones</button>

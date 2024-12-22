@@ -18,11 +18,12 @@ export class EventoUpdateController {
     //Guarda los cambios cuando un invitado acepta o rechaza
     @Post('respuestaInvitacion/:id_evento')
     async respuestaInvitacion(@Param('id_evento') id_evento: number, @Body('id_usuario') id_usuario: number, @Body('respuesta') respuesta: string){
+        console.log("Id del evento:",id_evento, "Id del usuario:",id_usuario, "Respuesta:",respuesta);
         return this.eventoUpdateService.respuestaInvitacion(id_evento, id_usuario, respuesta);
     }
     //Deshace los cambios realizados
     @Post('deshacer/:id_evento')
-    async deshacer(@Param('id_evento') id_evento: number, @Body('id_usuario') id_usuario: number){
-        return this.eventoUpdateService.deshacerCambios(id_evento, id_usuario);
+    async deshacer(@Param('id_evento') id_evento: number){
+        return this.eventoUpdateService.deshacerCambios(id_evento);
     }
 }

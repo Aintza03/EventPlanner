@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const authController = require('./controllers/authentificationController');
 const registerController = require('./controllers/registerController');
 const modController = require('./controllers/modController');
-const eventosController = require('./controllers/eventos');
+const eventosController = require('./controllers/eventosController');
+const notifyController = require('./controllers/notifyController');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -21,6 +22,7 @@ app.use('/autentificacionLog', authController);
 app.use('/autentificacionReg', registerController);
 app.use('/autentificacionMod', modController);
 app.use('/eventos', eventosController);
+app.use('/notificaciones',notifyController);
 // Start the server
 app.listen(port, () => {
     console.log('Server running at http://localhost:' + port);

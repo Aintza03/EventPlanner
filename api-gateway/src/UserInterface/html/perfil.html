@@ -5,13 +5,24 @@
         <link rel="stylesheet" type="text/css" href="../css/stilesPerfil.css">
     </head>
     <body>
+        <button id = "menuIcono" class = "icono-menu">&#9776;</button>
         <button id = "inicio" onclick="window.location.href='principal.html'">Inicio</button>
-        <div id = "Perfil">
+        <div id = "barra_lateral" class = "barra_lateral">
+            <button id = "cerrarBarra" class = "cerrar_barra">&times;</button><!--&times:×-->
+            <ul id = "datosBarra">
+
+            </ul>
+            <div class="botonesNav">
+                <button id = "Previo" class = "botonNav">&lt;</button>
+                <button id = "Siguiente" class = "botonNav">&gt;</button>
+            </div>
+        </div>
+        <div id = "Perfil" class = "contenido">
             <p id = "Usuario" data-value = '???'>Nombre de usuario: ???</p>
             <p id = "Correo" data-value = '???'>Correo: ???</p>
             <button id = "editarButton" class="formButton">Editar</button>
         </div>
-        <div id = "Editar">
+        <div id = "Editar" class = "contenido">
             <p id = "usuarioEdit"> Nombre de usuario: ???</p>
             <label for = "correoEdit">Correo:</label>
             <input type = "text" id = "correoEdit" name = "correoEdit" value = "???">

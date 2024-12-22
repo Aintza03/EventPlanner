@@ -1,4 +1,93 @@
 let idUsuario;
+let notificaciones = [];
+let grupoActual;
+document.getElementById('menuIcono').addEventListener('click', async function() {
+    document.getElementById('barra_lateral').style.width = '350px';
+    document.getElementById('menuIcono').style.display = 'none';
+    document.getElementById('cerrarBarra').style.display = 'inline';
+    document.getElementById('Perfil').style.marginLeft = '90%';
+    console.log("ID USUARIO: "+idUsuario);
+    const token = localStorage.getItem('token');
+    try{
+        const response = await fetch('http://localhost:3000/notificaciones/listaNotificacion', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }})
+            if(response.ok){
+                notificaciones = [];
+                const data = await response.json();
+                grupoActual = 0;
+                const notificaciones2 = data.notificaciones;
+                notificaciones = notificaciones2;
+                let i = 0;
+                let ul = document.getElementById('datosBarra');
+                for (let notificacion of notificaciones2) {
+                    if (i >= 10) {
+                        break;
+                    }
+                    let li = document.createElement('li');
+                    li.id = 'notificacion' + i;
+                    li.textContent = notificacion;
+                    ul.appendChild(li);
+                    i++;
+                }
+                if(notificaciones.length < 11){
+                    document.getElementById('Siguiente').disabled = true;
+                }
+            }
+    }catch (error){
+        console.error('Error: ', error);
+    }
+    document.getElementById('Previo').disabled = true;
+
+});
+
+document.getElementById('cerrarBarra').addEventListener('click', async function() {
+    document.getElementById('barra_lateral').style.width = '0';
+    document.getElementById('menuIcono').style.display = 'inline';
+    document.getElementById('cerrarBarra').style.display = 'none';
+    document.getElementById('Perfil').style.marginLeft = '85%';
+    document.getElementById('datosBarra').innerHTML = '';
+});
+document.getElementById('Siguiente').addEventListener('click', async function() {
+    grupoActual++;
+    let ul = document.getElementById('datosBarra');
+    ul.innerHTML = '';
+    let i = 0;
+    for (let notificacion of notificaciones) {
+        if (i >= 10 * grupoActual && i < 10 * (grupoActual + 1)) {
+            let li = document.createElement('li');
+            li.id = 'notificacion' + i;
+            li.textContent = notificacion;
+            ul.appendChild(li);
+        }
+        i++;
+    }
+    document.getElementById('Previo').disabled = false;
+    if (grupoActual === Math.floor(notificaciones.length/10)) {
+        document.getElementById('Siguiente').disabled = true;
+    }
+});
+document.getElementById('Previo').addEventListener('click', async function() {
+    grupoActual--;
+    let ul = document.getElementById('datosBarra');
+    ul.innerHTML = '';
+    let i = 0;
+    for (let notificacion of notificaciones) {
+        if (i >= 10 * grupoActual && i < 10 * (grupoActual + 1)) {
+            let li = document.createElement('li');
+            li.id = 'notificacion' + i;
+            li.textContent = notificacion;
+            ul.appendChild(li);
+        }
+        i++;
+    }
+    document.getElementById('Siguiente').disabled = false;
+    if (grupoActual === 0) {
+        document.getElementById('Previo').disabled = true;
+    }
+});
 async function eliminarFavorito(event) {
     const token = localStorage.getItem('token');
     const botonId = event.target.id;
@@ -167,11 +256,13 @@ async function openTab(evt, tabName) {
                     tdDescripcion.textContent = evento.descripcion;
                     const tdEstatus = document.createElement('td');
                     const selector = document.createElement('select');
+                    selector.id = 'pestana2' + evento.id;
+                    selector.addEventListener('change', invitacion);
                     const option1 = document.createElement('option');
                     option1.value = 'Pending';
                     option1.textContent = 'Pendiente';
                     const option2 = document.createElement('option');
-                    option2.value = 'Acceptado';
+                    option2.value = 'Aceptado';
                     option2.textContent = 'Aceptado';
                     const option3 = document.createElement('option');
                     option3.value = 'Rechazado';
@@ -179,7 +270,7 @@ async function openTab(evt, tabName) {
                     selector.appendChild(option1);
                     selector.appendChild(option2);
                     selector.appendChild(option3);
-                    selector.selectedIndex = evento.status === 'Pending' ? 0 : (evento.status === 'Acceptado' ? 1 : 2);
+                    selector.selectedIndex = evento.status === 'Pending' ? 0 : (evento.status === 'Aceptado' ? 1 : 2);
                     tdEstatus.appendChild(selector);
                     tr.appendChild(tdName);
                     tr.appendChild(tdFechaIni);
@@ -279,7 +370,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     } catch (error) {
         console.error('Error: ', error);
     }
-    document.querySelector('.pestana').click();    
+    document.querySelector('.pestana').click();
 });
 
 async function busqueda(event) {
@@ -333,11 +424,13 @@ async function busqueda(event) {
                         tdEliminar.appendChild(button);
                     }else if(p == 'Desplegable2'){
                         const selector = document.createElement('select');
+                        selector.id = 'pestana2' + evento.id;
+                        selector.addEventListener('change', invitacion);
                         const option1 = document.createElement('option');
                         option1.value = 'Pending';
                         option1.textContent = 'Pendiente';
                         const option2 = document.createElement('option');
-                        option2.value = 'Acceptado';
+                        option2.value = 'Aceptado';
                         option2.textContent = 'Aceptado';
                         const option3 = document.createElement('option');
                         option3.value = 'Rechazado';
@@ -345,7 +438,7 @@ async function busqueda(event) {
                         selector.appendChild(option1);
                         selector.appendChild(option2);
                         selector.appendChild(option3);
-                        selector.selectedIndex = evento.status === 'Pending' ? 0 : (evento.status === 'Acceptado' ? 1 : 2);
+                        selector.selectedIndex = evento.status === 'Pending' ? 0 : (evento.status === 'Aceptado' ? 1 : 2);
                         tdEliminar.appendChild(selector);
                     }
                     else if(p == 'Desplegable3'){
@@ -378,3 +471,32 @@ const busquedas = document.querySelectorAll('.busqueda');
 busquedas.forEach(b => {
     b.addEventListener('keyup', busqueda);
 });
+
+async function invitacion(event){
+    const token = localStorage.getItem('token');
+    const selector = event.target;
+    const opcion = selector.options[selector.selectedIndex].value;
+    if(opcion === 'Pending'){
+        return;
+    }
+    const selectorId = selector.id;
+    const idEvento = selectorId.replace('pestana2', '');
+    try{
+        const response = await fetch('http://localhost:3000/eventos/invitacion?idEvento=' + encodeURIComponent(idEvento) + '&idUsuario='+ encodeURIComponent(idUsuario) +'&status=' + encodeURIComponent(opcion), {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        if(response.ok){
+            const data = await response.json();
+            if(opcion === 'Rechazado'){
+                page.reload();
+            }
+        }else{
+            console.error('Error al aceptar o rechazar la invitacion');
+        }
+    } catch (error){
+        console.error('Error: ', error);
+    }
+}

@@ -5,9 +5,20 @@
         <link rel="stylesheet" type="text/css" href="../css/stilesDetalles.css">
     </head>
     <body>  
-        <button id = "Perfil" onclick="window.location.href='principal.html'">Inicio</button>
+        <button id = "menuIcono" class = "icono-menu">&#9776;</button> <!--&#9776:☰-->
+        <button id = "Principal" onclick="window.location.href='principal.html'">Inicio</button>
         <button id = "Favoritos">Añadir a favoritos</button>
         <button id = "Perfil" onclick="window.location.href='perfil.html'">Perfil</button>
+        <div id = "barra_lateral" class = "barra_lateral">
+            <button id = "cerrarBarra" class = "cerrar_barra">&times;</button><!--&times:×-->
+            <ul id = "datosBarra">
+
+            </ul>
+            <div class="botonesNav">
+                <button id = "Previo" class = "botonNav">&lt;</button>
+                <button id = "Siguiente" class = "botonNav">&gt;</button>
+            </div>
+        </div>
         <div id = 'Ver'>
             <p id = "Creador">Creador: ????</p>
             <p id = "Nombre">Nombre: ????</p>
@@ -18,6 +29,8 @@
             <p>Participantes:</p>
             <ul id = "Participantes"></ul>
             <button id = "botonEditar" class = "formButton">Editar</button>
+            <hr>
+            <button id = "deshacer" class = "formButton">Deshacer</button>
         </div>
         <form id = 'Editar'>
             <p id = "CreadorEdit">Creador: ????</p>

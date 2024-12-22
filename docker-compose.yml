@@ -20,6 +20,13 @@ services:
       - "4000:4000"
     networks: 
       - microservices-network
+  notify:
+    build: ./Notify
+    container_name: notify
+    ports:
+      - "6000:6000"
+    networks:
+      - microservices-network
 
   api-gateway:
     build: ./api-gateway
@@ -30,6 +37,7 @@ services:
       - autentify
       - registrar_eventos
       - evento_update
+      - notify
     networks:
       - microservices-network
 

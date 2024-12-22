@@ -7,6 +7,7 @@ export class NotifyController{
     //Obtiene las ultimas notificaciones que ha recibido el usuario
     @Get('notificaciones/:idUsuario')
     async obtenerNotificaciones(@Param ('idUsuario') idUsuario: number){
-        return this.notifyService.obtenerNotificaciones(idUsuario);
+        const res = this.notifyService.obtenerNotificaciones(idUsuario);
+        return res;
     }
 }

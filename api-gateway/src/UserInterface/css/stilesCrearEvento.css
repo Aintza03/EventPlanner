@@ -2,7 +2,12 @@ body {
     background-color: #eedfcc;
     font-family: Arial, sans-serif;
 }
-
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+}
 button {
     margin: 20px;
     padding: 10px 20px;
@@ -21,8 +26,18 @@ button:hover {
     margin-left: 94%;
     margin-right: 0px;
     border-right: 0px;
+    display: inline-block;
+}
+#menuIcono, #cerrarBarra{
+    font-size: 30px;
+    cursor: pointer;
+    vertical-align: middle;
+    display: inline-block;
 }
 
+#cerrarBarra{
+    display: none;
+}
 form {
     background-color: #faf0e6;
     padding: 20px;
@@ -59,4 +74,65 @@ form input {
     margin-top: 10px;
     text-align: center;
     display: block;
+}
+
+.barra_lateral{
+    height: 100%;
+    width: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #87CEFA;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.barra_lateral ul{
+    padding-right: 1px;
+    margin-top: 2.5em;
+}
+
+.barra_lateral a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.barra_lateral a:hover {
+    color: #f1f1f1;
+}
+
+.cerrar_barra {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#Perfil {
+    margin-left: 85%;
+    margin-bottom: 0px;
+}
+
+.botonNav{
+    border:none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    margin-top: 2em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.botonNav:disabled{
+    background-color: #cccccc;
+    cursor: not-allowed;
 }

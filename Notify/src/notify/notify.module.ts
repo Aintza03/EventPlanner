@@ -3,12 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotifyController } from './notify.controller';
 import { NotifyService } from './notify.service';
-import { NotifyGateway } from './gateway/notify.gateway';
-import { EventoUpdate, EventoUpdateSchema } from '../../../EventUpdate/src/evento-update/schemas/evento-update.schema';
-import { Evento } from '../../../EventUpdate/src/evento/evento.entity'
-import { Usuario } from '../../../EventUpdate/src/usuario/usuario.entity'
-import { Atiende } from '../../../EventUpdate/src/atiende/atiende.entity'
-import { Favorito } from '../../../EventUpdate/src/favorito/favorito.entity'
+import { EventoUpdate, EventoUpdateSchema } from '../evento-update/schemas/evento-update.schema';
+import { Evento } from '../evento/evento.entity';
+import { Usuario } from '../usuario/usuario.entity';
+import { Atiende } from '../atiende/atiende.entity';
+import { Favorito } from '../favorito/favorito.entity';
 
 @Module({
   imports: [
@@ -16,6 +15,6 @@ import { Favorito } from '../../../EventUpdate/src/favorito/favorito.entity'
     TypeOrmModule.forFeature([Evento, Usuario, Atiende, Favorito]),
   ],
   controllers: [NotifyController],
-  providers: [NotifyService, NotifyGateway],
+  providers: [NotifyService],
 })
 export class NotifyModule {}

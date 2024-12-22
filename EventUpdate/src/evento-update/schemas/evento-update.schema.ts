@@ -13,6 +13,8 @@ export class EventoUpdate extends Document {
   campo: string;
   @Prop()
   respuesta: string;
+  @Prop({default: 0})
+  deshecho: number;
   @Prop ({required: true})
   accion: string;
   @Prop({required: true})
