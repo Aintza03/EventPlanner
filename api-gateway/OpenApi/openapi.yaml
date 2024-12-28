@@ -500,8 +500,64 @@ paths:
                 $ref: '#/components/schemas/Evento'
         '400':
           description: Error en la solicitud
+  /eventos/comprobarFestivo/{fechaIni}/{fechaFin}:
+    get:
+      summary: Comprobar si hay festivo
+      parameters:
+        - in: path
+          name: fechaIni
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: fechaFin
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Festivo comprobado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Festivos'
+        '400':
+          description: Error en la solicitud
 components:
   schemas:
+    Festivos:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          startDate:
+            type: string
+          endDate:
+            type: string
+          type:
+            type: string
+          name:
+            type: object
+            properties:
+              language:
+                type: string
+              text:
+                type: string
+          regionalScope:
+            type: string
+          temporalScope:
+            type: string
+          nationwide:
+            type: bool
+          subdivisions:
+            type: object
+            properties:
+              code:
+                type: string
+              shortName:
+                type: string
     ListaEvento:
       type: array
       items:

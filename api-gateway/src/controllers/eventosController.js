@@ -376,4 +376,26 @@ router.get('/listaNotificacion', async (req, res) => {
         }
     }
 });
+router.get('/comprobarFestivo', async(req, res) => {
+    const token = req.headers.authorization.split(' ')[1]; /*Igual puede comprobarse aquí */
+    let fechaIni = req.query.fechaInicio;
+    let fechaFin = req.query.fechaFin;
+    fechaIni = fechaIni.split('T')[0];
+    fechaFin = fechaFin.split('T')[0];
+    try{
+        const response = await axios.get('https://openholidaysapi.org/PublicHolidays?countryIsoCode=ES&validFrom=' + fechaIni + '&validTo=' + fechaFin, {
+        });
+        if (response.data.length > 0) { 
+            res.status(200).json(response.data); 
+        } else { 
+            res.status(200).json(response.data); 
+        }
+    } catch (error){
+        if(error.response){
+            res.status(error.response.status).json(error.response.data);
+        }else{
+            res.status(500).json({message: 'A ocurrido un error'});
+        }
+    }
+});
 module.exports = router;

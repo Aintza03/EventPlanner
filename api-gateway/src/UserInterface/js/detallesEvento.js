@@ -340,3 +340,39 @@ document.getElementById('deshacer').addEventListener('click', async function() {
         console.error('Error: ', error);
     }
 });
+
+document.getElementById('FechaInicioEdit').addEventListener('change', cambioDeFecha);
+document.getElementById('FechaFinEdit').addEventListener('change', cambioDeFecha);
+async function cambioDeFecha(){
+    const fechaini = document.getElementById('FechaInicioEdit').value;
+    const fechafin = document.getElementById('FechaFinEdit').value;
+    if(fechaini && fechafin){
+        if(fechaini > fechafin){
+            document.getElementById('FechaInicioEdit').value = '';
+            document.getElementById('FechaFinEdit').value = '';
+        }else{
+            try{
+                const response = await fetch('http://localhost:3000/eventos/comprobarFestivo?fechaInicio='+encodeURIComponent(fechaini)+'&fechaFin=' + encodeURIComponent(fechafin), {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                    }
+                });
+                if(response.ok){
+                    const data = await response.json();
+                    if(data.length > 0){
+                        let respuesta = "";
+                        for(let festivo of data){
+                            respuesta += "Hay un festivo desde el " + festivo.startDate + " hasta " + festivo.endDate + ".\n";
+                        }
+                        alert(respuesta);
+                    }
+                }else{
+                    const e = await response.json();
+                }
+            } catch(error){
+                console.error('Error: ', error);
+            }
+        }
+    }
+}
