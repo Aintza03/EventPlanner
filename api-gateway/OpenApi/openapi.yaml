@@ -1,0 +1,666 @@
+openapi: 3.0.0
+info:
+  title: Event Planner API
+  version: 1.0.0
+paths:
+  /usuarios/register: 
+    post:
+      summary: Registrar usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        '200':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensaje'
+        '400':
+          description: Error en la solicitud
+  /usuarios/login: 
+    post:
+      summary: Iniciar sesión (Necesario para obtener el token, solo con usuarios registrados)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: Usuario autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Error en la solicitud
+  /usuarios/usuario: 
+    get:
+      summary: Obtener usuario
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          description: Error en la solicitud
+  /usuarios/actualizar: 
+    put:
+      summary: Actualizar usuario
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Actualizar'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensaje'
+        '400':
+          description: Error en la solicitud
+  /usuarios/usuarioCorreo/{correo}: 
+    get:
+      summary: Obtener usuario por correo
+      parameters:
+        - in: path
+          name: correo
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          description: Error en la solicitud
+  /eventos/listaNotificacion: 
+    get:
+      summary: Obtener lista de notificaciones
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de notificaciones obtenida
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notificacion'
+        '400':
+          description: Error en la solicitud
+  /eventos/crear: 
+    post:
+      summary: Crear evento (Es necesario crear un evento para probar las siguientes funcionalidades)
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mensaje'
+      responses:
+        '200':
+          description: Evento creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '400':
+          description: Error en la solicitud
+  /eventos/misEventos/{id}: 
+    get:
+      summary: Obtener eventos de un usuario
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Eventos obtenidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListaEvento'
+        '400':
+          description: Error en la solicitud
+  /eventos/borrar/{idEvento}: 
+    post:
+      summary: Borrar evento
+      parameters:
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Evento borrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensaje'
+        '400':
+          description: Error en la solicitud
+  /eventos/buscar/{pestana}/{id}/{texto}: 
+    get:
+      summary: Buscar eventos
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: pestana
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: texto
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Eventos encontrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Eventos'
+        '400':
+          description: Error en la solicitud
+  /eventos/detalle/{idEvento}: 
+    get:
+      summary: Obtener detalle de un evento
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalle de evento obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '400':
+          description: Error en la solicitud
+  /eventos/agregarFavorito/{idEvento}: 
+    post:
+      summary: Agregar evento a favoritos
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Evento agregado a favoritos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensaje'
+        '400':
+          description: Error en la solicitud
+  /eventos/invitaciones/{id}: 
+    get:
+      summary: Obtener invitaciones de un usuario
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invitaciones obtenidas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Eventos'
+        '400':
+          description: Error en la solicitud
+  /eventos/misFavoritos/{id}: 
+    get:
+      summary: Obtener eventos favoritos de un usuario
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Eventos favoritos obtenidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListaEvento'
+        '400':
+          description: Error en la solicitud
+  /eventos/eliminarFavorito/{idEvento}: 
+    post:
+      summary: Eliminar evento de favoritos
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Evento eliminado de favoritos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensaje'
+        '400':
+          description: Error en la solicitud
+  /eventos/updateInvite/{idEvento}/{invitado}: 
+    post:
+      summary: Actualizar invitado
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: invitado
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invitado actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '400':
+          description: Error en la solicitud
+  /eventos/updateUninvite/{idEvento}/{invitado}:
+    post:
+      summary: Actualizar invitado
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: invitado
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invitado actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '400':
+          description: Error en la solicitud
+  /eventos/updateEvento/{idEvento}/{idUsuario}/{campo}/{cambio}:
+    post:
+      summary: Actualizar evento
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idUsuario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: campo
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cambio
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Evento actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '400':
+          description: Error en la solicitud
+  /eventos/deshacer/{idEvento}:
+    post:
+      summary: Deshacer cambios en evento
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cambios deshechos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '400':
+          description: Error en la solicitud
+  /eventos/invitacion/{idEvento}/{idUsuario}/{status}:
+    post:
+      summary: Actualizar invitacion
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idEvento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idUsuario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: status
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invitacion actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '400':
+          description: Error en la solicitud
+components:
+  schemas:
+    ListaEvento:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          nombre:
+            type: string
+          fechaini:
+            type: string
+          fechafin:
+            type: string
+          lugar:
+            type: string
+          descripcion:
+            type: string
+          idUsuario:
+            type: string
+        required:
+          - id
+          - nombre
+          - fechaini
+          - fechafin
+          - lugar
+          - descripcion
+          - idUsuario
+    Notificacion:
+      type: array
+      items:
+        type: string
+    Actualizar:
+      type: object
+      properties:
+        contrasenaVieja:
+          type: string
+        contrasenaNueva:
+          type: string
+        contrasenaRepetida:
+          type: string
+        correo:
+          type: string
+      required:
+        - contrasenaVieja
+        - contrasenaNueva
+        - contrasenaRepetida
+        - correo
+    Register:
+      type: object
+      properties:
+        nombreUsuario:
+          type: string
+        contrasena:
+          type: string
+        correo:
+          type: string
+      required:
+        - nombreUsuario
+        - contrasena
+        - correo
+    Eventos:
+      type: array
+      items:
+        type: object
+        properties:
+          nombre:
+            type: string
+          descripcion:
+            type: string
+          lugar:
+            type: string
+          fechaini:
+            type: string
+          fechafin:
+            type: string
+          status:
+            type: string
+        required:
+          - nombre
+          - descripcion
+          - lugar
+          - fechaini
+          - fechafin
+          - status
+          - idUsuario
+    Login:
+      type: object
+      properties:
+        nombreUsuario:
+          type: string
+        contrasena:
+          type: string
+      required:
+        - nombreUsuario
+        - contrasena
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+    Mesaje:
+      type: object
+      properties:
+        mensaje:
+          type: string
+      required:
+        - mensaje
+    Usuario:
+      type: object
+      properties:
+        idUsuario:
+          type: string
+        nombreUsuario:
+          type: string
+        correo:
+          type: string
+      required:
+        - idUsuario
+        - nombreUsuario
+        - correo
+    Evento:
+      type: object
+      properties:
+        idEvento:
+          type: string
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        lugar:
+          type: string
+        fechaini:
+          type: string
+        fechafin:
+          type: string
+        idUsuario:
+          type: string
+        correo:
+          type: string
+        invitados:
+          type: array
+          items:
+            type: object
+            properties:
+              idUsuario:
+                type: string
+              nombre:
+                type: string
+              correo:
+                type: string
+        required:
+        - idEvento
+        - nombre
+        - descripcion
+        - lugar
+        - fechaini
+        - fechafin
+        - idUsuario
+        - correo
+        - invitados

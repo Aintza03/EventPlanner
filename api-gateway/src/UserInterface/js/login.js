@@ -3,7 +3,7 @@ document.getElementById('login').addEventListener('submit', async function(event
     const usuario = document.getElementById('usuarioLogin').value;
     const contrasena = document.getElementById('contrasenaLogin').value;
     try {
-        const response = await fetch('http://localhost:3000/autentificacionLog/login', {
+        const response = await fetch('http://localhost:3000/usuarios/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

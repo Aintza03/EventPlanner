@@ -2,27 +2,25 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const bodyParser = require('body-parser');
-const authController = require('./controllers/authentificationController');
-const registerController = require('./controllers/registerController');
-const modController = require('./controllers/modController');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 const eventosController = require('./controllers/eventosController');
-const notifyController = require('./controllers/notifyController');
+const usuarioController = require('./controllers/usuarioController');
 const app = express();
 const port = process.env.PORT || 3000;
+const openApiSpec = YAML.load(path.join(__dirname, '..', 'OpenApi', 'openapi.yaml'));
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
 // Serve static files from UserInterface directory
 app.use(express.static(path.join(__dirname, 'UserInterface')));
 // Routes
-app.use('/autentificacionLog', authController);
-app.use('/autentificacionReg', registerController);
-app.use('/autentificacionMod', modController);
+app.use('/usuarios', usuarioController);
 app.use('/eventos', eventosController);
-app.use('/notificaciones',notifyController);
+
 // Start the server
 app.listen(port, () => {
     console.log('Server running at http://localhost:' + port);

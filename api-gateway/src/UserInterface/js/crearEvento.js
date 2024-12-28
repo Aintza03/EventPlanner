@@ -11,7 +11,7 @@ document.getElementById('menuIcono').addEventListener('click', async function() 
     console.log("ID USUARIO: "+idUsuario);
     const token = localStorage.getItem('token');
     try{
-        const response = await fetch('http://localhost:3000/notificaciones/listaNotificacion', {
+        const response = await fetch('http://localhost:3000/eventos/listaNotificacion', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/autentificacionMod/usuario', {
+        const response = await fetch('http://localhost:3000/usuarios/usuario', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -128,7 +128,7 @@ document.getElementById('botonInvitar').addEventListener('click', async function
     const participante = participantesInput.value.trim();   
     if (participante) {
         try{
-            const response = await fetch('http://localhost:3000/autentificacionMod/usuarioCorreo?correo='+encodeURIComponent(participante), {
+            const response = await fetch('http://localhost:3000/usuarios/usuarioCorreo?correo='+encodeURIComponent(participante), {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')

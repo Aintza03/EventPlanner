@@ -5,7 +5,7 @@ document.getElementById('menuIcono').addEventListener('click', async function() 
     document.getElementById('inicio').style.marginLeft = '90%';
     const token = localStorage.getItem('token');
     try{
-        const response = await fetch('http://localhost:3000/notificaciones/listaNotificacion', {
+        const response = await fetch('http://localhost:3000/eventos/listaNotificacion', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -100,7 +100,7 @@ document.getElementById('guardar').addEventListener('click', async function() {
     const token = localStorage.getItem('token');
     //enviar cambios
     try {
-        const response = await fetch('http://localhost:3000/autentificacionMod/actualizar', {
+        const response = await fetch('http://localhost:3000/usuarios/actualizar', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ document.getElementById('guardar').addEventListener('click', async function() {
 
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        const response = await fetch('http://localhost:3000/autentificacionMod/usuario', {
+        const response = await fetch('http://localhost:3000/usuarios/usuario', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -153,39 +153,3 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.error('Error: ', error);
     }
 });
-/*document.getElementById('guardar').addEventListener('click', function() {
-    const newEmail = document.getElementById('correoEdit').value;
-    document.getElementById('Correo').textContent = 'Correo: ' + newEmail;
-    document.getElementById('Correo').classList.remove('hidden');
-    document.getElementById('correoEdit').classList.add('hidden');
-    document.getElementById('editarButton').classList.remove('hidden');
-    document.getElementById('guardar').classList.add('hidden');
-    document.getElementById('Editar').classList.add('hidden');
-
-    // Here you would send the updated email and password to the server
-    // For example, using fetch or axios
-    const currentPassword = document.getElementById('contrasena').value;
-    const newPassword = document.getElementById('repetirContrasena').value;
-
-    // Example of sending data to the server
-    fetch('/update-profile', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: newEmail,
-            currentPassword: currentPassword,
-            newPassword: newPassword
-        })
-    }).then(response => {
-        if (response.ok) {
-            alert('Perfil actualizado correctamente');
-        } else {
-            alert('Error al actualizar el perfil');
-        }
-    }).catch(error => {
-        console.error('Error:', error);
-        alert('Error al actualizar el perfil');
-    });
-});*/

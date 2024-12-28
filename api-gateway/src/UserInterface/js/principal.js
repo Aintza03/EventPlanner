@@ -9,7 +9,7 @@ document.getElementById('menuIcono').addEventListener('click', async function() 
     console.log("ID USUARIO: "+idUsuario);
     const token = localStorage.getItem('token');
     try{
-        const response = await fetch('http://localhost:3000/notificaciones/listaNotificacion', {
+        const response = await fetch('http://localhost:3000/eventos/listaNotificacion', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/autentificacionMod/usuario', {
+        const response = await fetch('http://localhost:3000/usuarios/usuario', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token

@@ -141,7 +141,7 @@ def creacion_de_evento(data: EventoCreate,db:Session = Depends(get_db), token = 
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
     
-    nuevoEvento=Evento(nombre=data.nombre,fechaini=data.fechaini,fechafin=data.fechafin,lugar=data.lugar,descripcion=data.descripcion,idUsuario=data.idUsuario)
+    nuevoEvento = Evento(nombre=data.nombre,fechaini=data.fechaini,fechafin=data.fechafin,lugar=data.lugar,descripcion=data.descripcion,idUsuario=data.idUsuario)
     try:
         db.add(nuevoEvento)
         db.commit()
@@ -172,11 +172,13 @@ def obtener_evento(id:int,db: Session = Depends(get_db)):
     if not evento:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Evento no encontrado')
     return evento
+
 #obtiene la lista de invitados a un evento
 @app.get('/evento/invitados/{id}', response_model=Invitados)
 def obtener_invitados(id:int, db: Session = Depends(get_db)):
     invitados = db.query(Usuario).join(Atiende,Usuario.id == Atiende.idUsuario).filter(Atiende.idEvento == id).all()
     return Invitados(invitados=invitados)
+
 #Obtiene aquellos eventos a los que estoy invitado
 @app.get('/eventos/invitados/{id}',response_model=InvitacionesRespuesta)
 def obtener_eventos_atiende(id: int, db: Session = Depends(get_db)):
@@ -199,6 +201,7 @@ def obtener_eventos_atiende(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No hay eventos')
     
     return InvitacionesRespuesta(invitaciones=invitaciones)
+
 #Obtiene aquellos eventos que tengo en favoritos
 @app.get('/eventos/favoritos/{id}', response_model=EventosRespuesta)
 def obtener_eventos_favoritos(id:int, db: Session = Depends(get_db)):
@@ -220,6 +223,7 @@ def eliminar_evento(id:int, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al eliminar el evento')
+
 #Pasa el estatus de un evento de favorito a normal
 @app.post('/eventos/favoritos/eliminar/{idUsuario}/{idEvento}')
 def eliminarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db)):
@@ -233,6 +237,7 @@ def eliminarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al cambiar el estado del evento')
+
 #Pasa el estatus de un evento de normal a favorito
 @app.post('/eventos/favoritos/agregar/{idUsuario}/{idEvento}')
 def agregarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db)):
@@ -245,6 +250,7 @@ def agregarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al cambiar el estado del evento')
+
 #Funcion de busqueda especificas la pestaña el usuario y el texto de busqueda
 @app.get('/buscar/Eventos/{pestana}/{id}/{texto}', response_model=InvitacionesRespuesta)
 def buscar_eventos(pestana:str, id:int, texto:str, db:Session = Depends(get_db)):

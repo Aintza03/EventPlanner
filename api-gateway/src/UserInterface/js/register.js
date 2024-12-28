@@ -5,7 +5,7 @@ document.getElementById('register').addEventListener('submit', async function(ev
     const contrasena = document.getElementById('contrasenaRegister').value;
     const correo = document.getElementById('email').value;
     try {
-        const response = await fetch('http://localhost:3000/autentificacionReg/register', {
+        const response = await fetch('http://localhost:3000/usuarios/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
