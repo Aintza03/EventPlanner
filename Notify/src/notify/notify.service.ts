@@ -15,13 +15,18 @@ export class NotifyService{
     @InjectRepository(Evento) private eventoRepository: Repository<Evento>,
     @InjectRepository(Atiende) private atiendeRepository: Repository<Atiende>){}
     
-    async obtenerNotificaciones(idUsuario: number): Promise<EventoUpdate[]>{
-        try{
-        const invitaciones = await this.atiendeRepository.find({ where: { usuario: { id: idUsuario } } });  
-        const ids = invitaciones.map(invitacion => invitacion.evento.id);
-        console.log("Devolviendo invitaciones");
-        return this.eventoUpdateModel.find({$or: [{id_usuario: idUsuario},{id_evento:{$in: ids}}]}).sort({fecha: -1}).limit(100).exec();
-        } catch (error){
+    async obtenerNotificaciones(idUsuario: number): Promise<EventoUpdate[]> {
+        try {
+            const invitaciones = await this.atiendeRepository.find({ where: { usuario: { id: idUsuario } } });
+            console.log(invitaciones);
+            if(invitaciones.length === 0 || invitaciones == null){
+                return this.eventoUpdateModel.find({ id_usuario: idUsuario }).sort({ fecha: -1 }).limit(100).exec();
+            }
+            console.log("Devolviendo invitaciones");
+            const ids = invitaciones.map(invitacion => invitacion.id);
+            return this.eventoUpdateModel.find({$or: [{ id_usuario: idUsuario },{ id_evento: { $in: ids } }]}).sort({ fecha: -1 }).limit(100).exec();
+        } catch (error) {
+            console.log(error);
             throw new InternalServerErrorException('Error al obtener las notificaciones');
         }
     }
