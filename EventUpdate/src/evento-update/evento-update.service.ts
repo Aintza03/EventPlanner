@@ -17,6 +17,7 @@ export class EventoUpdateService {
     ) {}
 
     private async crearUpdatesCambio(id_evento: number, id_usuario: number, accion: string, deshecho: number,cambio: string, campo: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
+        console.log('Guardando datos');
         const eventoUpdate = new this.eventoUpdateModel({
             id_evento: id_evento,
             id_usuario: id_usuario,
@@ -32,6 +33,7 @@ export class EventoUpdateService {
         return eventoUpdate;
     }
     private async crearUpdatesRespuesta(id_evento: number, id_usuario: number, accion: string, deshecho: number, respuesta: string, descripcion: string, fecha:string): Promise<EventoUpdate> {
+        console.log('Guardando datos');
         const eventoUpdate = new this.eventoUpdateModel({
             id_evento: id_evento,
             id_usuario: id_usuario,
@@ -49,8 +51,7 @@ export class EventoUpdateService {
     //funcion que actualiza un campo concreto del evento y luego llama a crearUpdates
     async updateEvento(id_evento: number, id_usuario: number, accion: string, cambio: string, campo: string): Promise<EventoUpdate> {
         const evento = await this.eventoRepository.findOne({ where: { id: id_evento } });
-        
-        //siempre encuentra evento
+        console.log("Se ha encontrado el evento");
         if(accion == "AnyadirInvitados"){
             const atiende = this.atiendeRepository.create({ evento: { id: Number(id_evento) }, usuario: { id: parseInt(cambio)},status: 'Pending'  });
             await this.atiendeRepository.save(atiende);
@@ -64,6 +65,7 @@ export class EventoUpdateService {
             await this.eventoRepository.save(evento);
             console.log("Se ha guardado el cambio de modificar evento.");
         }
+        console.log('Se ha actualizado el evento');
         return this.crearUpdatesCambio(id_evento, id_usuario, accion,0, cambio, campo,"Se ha cambiado el " + campo + " del evento " + id_evento + " al " + cambio + ".", new Date().toISOString());
     }
     //funcion que guarda los cambios cuando un invitado acepta o rechaza
@@ -75,13 +77,14 @@ export class EventoUpdateService {
             console.log("Se ha aceptado el evento");
             atiende.status = "Aceptado";
             await this.atiendeRepository.save(atiende);
+            console.log("Se ha guardado la respuesta");
             return this.crearUpdatesRespuesta(id_evento, id_usuario, "responder",0,respuesta,"El usuario "+ id_usuario + " ha aceptado la invitacion al evento " + id_evento + ".", new Date().toISOString());
         }else if(respuesta == "Rechazado"){
             await this.atiendeRepository.remove(atiende);
             console.log("Se ha rechazado el evento");
             return this.crearUpdatesRespuesta(id_evento, id_usuario,"responder",0,respuesta, "El usuario " + id_usuario+ " ha rechazado la invitacion al evento " + id_evento + ".", new Date().toISOString());
         }else{
-            //throw error
+            console.log("Respuesta no valida");
             throw new HttpException("Respuesta no valida", HTTP.BAD_REQUEST);
         }
     }
@@ -89,6 +92,7 @@ export class EventoUpdateService {
     async deshacerCambios(id_evento: number): Promise<EventoUpdate> {
         const ultimaActualizacion = await this.eventoUpdateModel.findOne({ id_evento, campo: { $exists: true, $ne: null}, cambio: { $exists: true, $ne: null }, deshecho: {$ne: 1}}).sort({ fecha: -1 }).exec();
         if(!ultimaActualizacion){
+            console.log("No hay actualizaciones");
             throw new HttpException("No hay actualizaciones", HTTP.BAD_REQUEST);    
         }else{
             const evento = await this.eventoRepository.findOne({ where: { id: id_evento } });
@@ -99,9 +103,11 @@ export class EventoUpdateService {
             if(accion == "AnyadirInvitados"){
                 const atiende = await this.atiendeRepository.findOne({ where: { evento: { id: id_evento }, usuario: { id: parseInt(cambio) } } });
                 await this.atiendeRepository.remove(atiende);
+                console.log("Se ha deshecho el cambio de anadir invitados");
             }else if(accion == "eliminarInvitados"){
                 const atiende = this.atiendeRepository.create({ evento: { id: id_evento }, usuario: { id: parseInt(cambio) } });
                 await this.atiendeRepository.save(atiende);
+                console.log("Se ha deshecho el cambio de eliminar invitados");
             }else{ //modificar
                 if(typeof evento[campo] == 'string'){
                     evento[campo] = cambio;
@@ -109,6 +115,7 @@ export class EventoUpdateService {
                         evento[campo] = parseInt(cambio);
                     }
                 await this.eventoRepository.save(evento);
+                console.log("Se ha deshecho el cambio de modificar evento");
             }
             console.log("Se ha deshecho el cambio");
             return this.crearUpdatesCambio(id_evento, id_usuario,accion,1,cambio, campo, "Se ha deshecho el cambio del " + campo + " del evento " + id_evento + " al " + cambio + ".", new Date().toISOString());

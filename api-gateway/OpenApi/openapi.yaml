@@ -138,14 +138,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Mensaje'
+              $ref: '#/components/schemas/EventoRequest'
       responses:
         '200':
           description: Evento creado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Evento'
+                $ref: '#/components/schemas/Mensaje'
         '400':
           description: Error en la solicitud
   /eventos/misEventos/{id}: 
@@ -525,6 +525,40 @@ paths:
           description: Error en la solicitud
 components:
   schemas:
+    EventoRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        lugar:
+          type: string
+        fechaini:
+          type: string
+        fechafin:
+          type: string
+        idUsuario:
+          type: string
+        invitados:
+          type: array
+          items:
+            type: object
+            properties:
+              idUsuario:
+                type: string
+              nombre:
+                type: string
+              correo:
+                type: string
+        required:
+          - nombre
+          - descripcion
+          - lugar
+          - fechaini
+          - fechafin
+          - idUsuario
+          - invitados
     Festivos:
       type: array
       items:
@@ -564,7 +598,7 @@ components:
         type: object
         properties:
           id:
-            type: string
+            type: int
           nombre:
             type: string
           fechaini:
@@ -576,7 +610,7 @@ components:
           descripcion:
             type: string
           idUsuario:
-            type: string
+            type: int
         required:
           - id
           - nombre
@@ -660,7 +694,7 @@ components:
           type: string
       required:
         - token
-    Mesaje:
+    Mensaje:
       type: object
       properties:
         mensaje:

@@ -46,7 +46,7 @@ document.getElementById('cerrarBarra').addEventListener('click', async function(
     document.getElementById('barra_lateral').style.width = '0';
     document.getElementById('menuIcono').style.display = 'inline';
     document.getElementById('cerrarBarra').style.display = 'none';
-    document.getElementById('Principal').style.marginLeft = '70%';
+    document.getElementById('Principal').style.marginLeft = '65%';
     document.getElementById('datosBarra').innerHTML = '';
 });
 
@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const data = await response.json();
                     if(evento.correo !== data.correo){
                         document.getElementById('botonEditar').style.display = 'none';
+                        document.getElementById('deshacer').style.display = 'none';
                     }
                 } else {
                     console.error('Error al obtener el usuario');

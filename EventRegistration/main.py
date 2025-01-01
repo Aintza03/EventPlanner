@@ -133,57 +133,122 @@ class InvitacionesRespuesta(BaseModel):
 #Crea los distintos eventos y los guarda en BD
 @app.post('/eventos/registrar')
 def creacion_de_evento(data: EventoCreate,db:Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /eventos/registrar.')
+    print('Comprobando autentificacion')
     try:
         token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
         nombreUsuario = token_modificar.get("usuario")
         if nombreUsuario is None:
+            print('No se ha especificado un usuario')
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
     except JWTError:
+        print('El usuario especificado no esta logeado')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
-    
+    print('Usuario permitido')
     nuevoEvento = Evento(nombre=data.nombre,fechaini=data.fechaini,fechafin=data.fechafin,lugar=data.lugar,descripcion=data.descripcion,idUsuario=data.idUsuario)
+    print('Guardando evento en la base de datos')
     try:
         db.add(nuevoEvento)
         db.commit()
         db.refresh(nuevoEvento)
+        print('Guardando participantes en la base de datos')
         for participante in data.participantes:
             atiende = Atiende(idUsuario=participante.idUsuario,idEvento=nuevoEvento.id)
             db.add(atiende)
             db.commit()
             db.refresh(atiende)
+        print('Participantes y Evento guardados en la base de datos')
         return {'mensaje':'Evento ' + nuevoEvento.nombre + ' guardado en la base de datos'}
     except Exception as e:
         db.rollback()
-        #send error
+        print('Error al guardar el evento en la base de datos')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al guardar el evento en la base de datos' + str(e))
 
 #Obtiene todos los eventos creados por el usuario
 @app.get('/eventos/{id}',response_model=EventosRespuesta)
-def obtener_eventos(id:int,db: Session = Depends(get_db)):
+def obtener_eventos(id:int,db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /eventos/{id}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
     eventos = db.query(Evento).filter(Evento.idUsuario == id).all()
+    print('Buscando eventos en la base de datos')
     if not eventos:
+        print('No hay eventos')
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='No hay eventos')
+    print('Eventos encontrados. Se devuelven al cliente')
     return EventosRespuesta(eventos=eventos)
 
 #Obtiene un evento en especifico
 @app.get('/evento/{id}', response_model=EventoRespuesta)
-def obtener_evento(id:int,db: Session = Depends(get_db)):
+def obtener_evento(id:int,db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /evento/{id}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
     evento = db.query(Evento).filter(Evento.id == id).first()
+    print('Buscando evento en la base de datos')
     if not evento:
+        print('Evento no encontrado')
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Evento no encontrado')
+    print('Evento encontrado. Se devuelve al cliente')
     return evento
 
 #obtiene la lista de invitados a un evento
 @app.get('/evento/invitados/{id}', response_model=Invitados)
-def obtener_invitados(id:int, db: Session = Depends(get_db)):
+def obtener_invitados(id:int, db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /evento/invitados/{id}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
+    print('Buscando invitados en la base de datos')
     invitados = db.query(Usuario).join(Atiende,Usuario.id == Atiende.idUsuario).filter(Atiende.idEvento == id).all()
+    print('Invitados encontrados. Se devuelven al cliente')
     return Invitados(invitados=invitados)
 
 #Obtiene aquellos eventos a los que estoy invitado
 @app.get('/eventos/invitados/{id}',response_model=InvitacionesRespuesta)
-def obtener_eventos_atiende(id: int, db: Session = Depends(get_db)):
+def obtener_eventos_atiende(id: int, db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /eventos/invitados/{id}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
+    print('Buscando eventos en la base de datos')
     eventos = db.query(Evento).join(Atiende, Evento.id == Atiende.idEvento).filter(Atiende.idUsuario == id).all()
     invitaciones = []
+    print('Buscando invitaciones en la base de datos')
     for ev in eventos:
         atiende = db.query(Atiende).filter(Atiende.idUsuario == id).filter(Atiende.idEvento == ev.id).first()
         if atiende:
@@ -198,73 +263,154 @@ def obtener_eventos_atiende(id: int, db: Session = Depends(get_db)):
             )
             invitaciones.append(invitacion)
     if not invitaciones:
+        print('No hay eventos')
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No hay eventos')
-    
+    print('Eventos encontrados. Se devuelven al cliente')
     return InvitacionesRespuesta(invitaciones=invitaciones)
 
 #Obtiene aquellos eventos que tengo en favoritos
 @app.get('/eventos/favoritos/{id}', response_model=EventosRespuesta)
-def obtener_eventos_favoritos(id:int, db: Session = Depends(get_db)):
+def obtener_eventos_favoritos(id:int, db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /eventos/favoritos/{id}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
+    print('Buscando eventos en la base de datos')
     eventos = db.query(Evento).join(Favorito,Evento.id == Favorito.idEvento).filter(Favorito.idUsuario == id).all()
     if not eventos:
+        print('No hay eventos')
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='No hay eventos favoritos')
+    print('Eventos encontrados. Se devuelven al cliente')
     return EventosRespuesta(eventos=eventos)
 
 #Elimina un evento de la base de datos
 @app.post('/eventos/eliminar/{id}')
-def eliminar_evento(id:int, db: Session = Depends(get_db)):
+def eliminar_evento(id:int, db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /eventos/eliminar/{id}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
+    print('Buscando evento en la base de datos')
     evento = db.query(Evento).filter(Evento.id == id).first()
     if not evento:
+        print('Evento no encontrado')
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Evento no encontrado')
+    print('Evento encontrado. Eliminando de la base de datos')
     try:
         db.delete(evento)
         db.commit()
+        print('Evento eliminado de la base de datos')
         return {'mensaje':'Evento eliminado de la base de datos'}
     except Exception as e:
         db.rollback()
+        print('Error al eliminar el evento de la base de datos')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al eliminar el evento')
 
 #Pasa el estatus de un evento de favorito a normal
 @app.post('/eventos/favoritos/eliminar/{idUsuario}/{idEvento}')
-def eliminarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db)):
+def eliminarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /eventos/favoritos/eliminar/{idUsuario}/{idEvento}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
+    print('Buscando evento en la base de datos')
     favorito = db.query(Favorito).filter(Favorito.idUsuario == idUsuario).filter(Favorito.idEvento == idEvento).first()
     if not favorito:
+        print('Evento no encontrado en favoritos')
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Este evento no esta en favoritos')
+    print('Evento encontrado en favoritos. Eliminando de favoritos')
     try:
         db.delete(favorito)
         db.commit()
+        print('Evento eliminado de favoritos')
         return {'mensaje':'Evento eliminado de favoritos'}
     except Exception as e:
         db.rollback()
+        print('Error al eliminar el evento de favoritos')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al cambiar el estado del evento')
 
 #Pasa el estatus de un evento de normal a favorito
 @app.post('/eventos/favoritos/agregar/{idUsuario}/{idEvento}')
-def agregarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db)):
+def agregarFavorito(idUsuario:int,idEvento:int, db: Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /eventos/favoritos/agregar/{idUsuario}/{idEvento}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
     favorito = Favorito(idUsuario=idUsuario,idEvento=idEvento)
+    print('Guardando evento en favoritos')
     try:
         db.add(favorito)
         db.commit()
         db.refresh(favorito)
+        print('Evento guardado en favoritos')
         return {'mensaje':'Evento agregado a favoritos'}
     except Exception as e:
         db.rollback()
+        print('Error al guardar el evento en favoritos')
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Error al cambiar el estado del evento')
 
 #Funcion de busqueda especificas la pestaña el usuario y el texto de busqueda
 @app.get('/buscar/Eventos/{pestana}/{id}/{texto}', response_model=InvitacionesRespuesta)
-def buscar_eventos(pestana:str, id:int, texto:str, db:Session = Depends(get_db)):
+def buscar_eventos(pestana:str, id:int, texto:str, db:Session = Depends(get_db), token = Depends(oauth2_scheme)):
+    print('Se utiliza la funcion /buscar/Eventos/{pestana}/{id}/{texto}.')
+    print('Comprobando autentificacion')
+    try:
+        token_modificar = jwt.decode(token, JWT_SECRET_KEY, algorithms=[TOKEN])
+        nombreUsuario = token_modificar.get("usuario")
+        if nombreUsuario is None:
+            print('No se ha especificado un usuario')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    except JWTError:
+        print('El usuario especificado no esta logeado')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se ha podido identificar al usuario")
+    print('Usuario permitido')
+    print('Buscando eventos en la base de datos')
     if re.match(r'\d{4}/\d{2}/\d{2}( \d{2}:\d{2})?',texto):
         #obtiene cualquier evento que ocurra durante esta fecha
         eventos = db.query(Evento).filter(or_(Evento.fechaini <= texto, Evento.fechafin >= texto)).all()
     else:
         eventos = db.query(Evento).filter(or_(Evento.nombre.contains(texto),Evento.lugar.contains(texto),Evento.descripcion.contains(texto))).all()
     if not eventos:
+        print('No se han encontrado eventos')
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='No se han encontrado eventos.')
     else:
+        print('Eventos encontrados.')
         if pestana == 'MisEventos':
             #eliminar eventos que no son mios
             eventos = [ev for ev in eventos if ev.idUsuario == id]
+            print('Se devuelve al cliente')
             return InvitacionesRespuesta(invitaciones=eventos)
         elif pestana == 'Invitaciones':
             eventos = [ev for ev in eventos if db.query(Atiende).filter(Atiende.idUsuario == id).filter(Atiende.idEvento == ev.id).first() != None]
@@ -282,7 +428,9 @@ def buscar_eventos(pestana:str, id:int, texto:str, db:Session = Depends(get_db))
                         status=atiende.status
                     )
                     invitaciones.append(invitacion)
+                    print('Se devuelve al cliente')
                     return InvitacionesRespuesta(invitaciones=invitaciones)
         else:
             eventos = [ev for ev in eventos if db.query(Favorito).filter(Favorito.idUsuario == id).filter(Favorito.idEvento == ev.id).first() != None]
+            print('Se devuelve al cliente')
             return InvitacionesRespuesta(invitaciones=eventos)
